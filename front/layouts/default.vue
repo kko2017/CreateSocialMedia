@@ -3,23 +3,23 @@
         <nav>
             <v-toolbar dark color="green">
                 <v-toolbar-title>
-                    <nuxt-linke to="/">ChitChatSM</nuxt-linke>
+                    <nuxt-link to="/">ChitChatSM</nuxt-link>
                 </v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-toolbar-items>
                     <v-text-field label="Search" hide-details prepend-icon="mdi-magnify" :style="{ display: 'flex', alignItems: 'center'}" />
-                    <v-btn text nuxt to="/profile">
+                    <v-btn text nuxt to="/profile" :style="{ display: 'flex', alignItems: 'center'}">
                         <div>Profile</div>
                     </v-btn>
-                    <v-btn text nuxt to="/signup">
+                    <v-btn text nuxt to="/signup" :style="{ display: 'flex', alignItems: 'center'}">
                         <div>Sign Up</div>
                     </v-btn>
                 </v-toolbar-items>
             </v-toolbar>
         </nav>
-        <v-row>
+        <v-row no-gutters>
             <v-col cols="12" md="4">
-                login window
+                <login-form />
             </v-col>
             <v-col cols="12" md="8">
                 <nuxt />
@@ -29,10 +29,17 @@
 </template>
 
 <script>
+import LoginForm from '~/components/LoginForm';
 export default {
-}
+    components: {
+        LoginForm,
+    },
+};
 </script>
-
 <style scoped>
-
+a {
+    display: inline-block;
+    text-decoration: none;
+    color: inherit;
+}
 </style>
