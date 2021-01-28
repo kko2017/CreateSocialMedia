@@ -4,6 +4,7 @@
             <nuxt-link to="/">Home</nuxt-link>
             <nuxt-link to="/profile">Profile</nuxt-link>
             <nuxt-link to="/signup">Signup</nuxt-link>
+            <nuxt-link to="/admin">Admin</nuxt-link>
         </nav>
         <nuxt/>
     </div>
@@ -11,6 +12,11 @@
 
 <script>
 export default {
+    head() {
+        return {
+            'title': 'Admin',
+        };
+    }
 }
 </script>
 

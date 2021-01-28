@@ -10,6 +10,11 @@ export default {
         return {
             name: 'Nuxt.js',
         }
+    },
+    head() {
+        return {
+            title: 'Sign Up',
+        };
     }    
 }
 </script>
