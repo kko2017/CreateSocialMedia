@@ -7,8 +7,12 @@
     "dev": "nuxt"
   },
   "dependencies": {
+    "@nuxtjs/axios": "^5.5.4",
+    "@nuxtjs/vuetify": "^1.2.1",
+    "axios": "^0.21.1",
     "nuxt": "^2.8.1",
-    "vue": "^2.6.12"
+    "vue": "^2.6.12",
+    "vuetify": "^2.4.3"
   },
   "author": "FithOh",
   "license": "ISC"
