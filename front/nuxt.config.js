@@ -4,11 +4,11 @@ module.exports = {
     },
     modules: [
         '@nuxtjs/vuetify',
-        'nuxtjs/axios'
+        '@nuxtjs/axios'
     ],
-    plugins: {
+    plugins: [
 
-    },
+    ],
     vuetify: {
 
     }
