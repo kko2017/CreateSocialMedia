@@ -1,0 +1,15 @@
+{
+  "name": "csm-front",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "nuxt": "^2.8.1",
+    "vue": "^2.6.12"
+  },
+  "scripts": {
+    "dev": "nuxt"
+  },
+  "author": "FithOh",
+  "license": "ISC"
+}
