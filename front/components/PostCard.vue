@@ -55,7 +55,7 @@ export default {
     },
     props: {
         post: {
-            typed: Object,
+            type: Object,
             required: true,
 
         }

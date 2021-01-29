@@ -18,13 +18,13 @@
             <v-card style="margin-bottom: 20px">
                 <v-container>
                     <v-subheader>Following</v-subheader>
-                    <follow-list />
+                    <follow-list :users="followingList" :remove="removeFollowing" />
                 </v-container>
             </v-card>
             <v-card style="margin-bottom: 20px">
                 <v-container>
                     <v-subheader>Follower</v-subheader>
-                    <follow-list />
+                    <follow-list :users="followerList" :remove="removeFollower" />
                 </v-container>
             </v-card>
         </v-container>
@@ -47,12 +47,26 @@ export default {
             ]
         };
     },
+    computed: {
+        followingList() {
+            return this.$store.state.users.followingList;
+        },
+        followerList() {
+            return this.$store.state.users.followerList;
+        }
+    },
     methods:{
         onChangeNickname() {
             this.$store.dispatch('users/changeNickname', {
                 nickname: this.nickname
             });
-        }
+        },
+        removeFollowing(id) {
+            this.$store.dispatch('users/removeFollowing', { id });
+        },
+        removeFollower(id) {
+            this.$store.dispatch('users/removeFollower', { id });
+        },
     },
     head() {
         return {
