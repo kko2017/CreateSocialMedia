@@ -28,7 +28,7 @@ export default {
             hiddenDetails: true,
             success: false,
             successMessages: ''
-        }
+        };
     },
     computed: {
         me() {

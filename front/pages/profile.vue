@@ -4,8 +4,10 @@
             <v-card style="margin-bottom: 20px">
                 <v-container>
                     <v-subheader>My Profile</v-subheader>
-                    <v-form>
-                        <v-text-field 
+                    <v-form ref="form" v-model="valid" @submit.prevent="onChangeNickname">
+                        <v-text-field
+                            v-model='nickname'
+                            :rules="nicknameRules"
                             label="Nickname"
                             required
                         />
@@ -38,8 +40,19 @@ export default {
     },
     data() {
         return {
-            name: 'Nuxt.js',
+            valid: false,
+            nickname: '',
+            nicknameRules: [
+                v => !!v || 'Nickname is required'
+            ]
         };
+    },
+    methods:{
+        onChangeNickname() {
+            this.$store.dispatch('users/changeNickname', {
+                nickname: this.nickname
+            });
+        }
     },
     head() {
         return {

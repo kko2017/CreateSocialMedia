@@ -7,6 +7,9 @@ export const mutations = {
     setMe(state, payload) {
         state.me = payload;
     },
+    changeNickname(state, payload) {
+        state.me.nickname = payload.nickname;
+    }
 };
 
 // able to use both syncronous and asyncronous processing in Actions
@@ -26,5 +29,8 @@ export const actions = {
     logOut({ commit }, payload) {
         commit('setMe', null);
     },
+    changeNickname({ commit }, payload) {
+        commit('changeNickname', payload);
+    } 
 
 };

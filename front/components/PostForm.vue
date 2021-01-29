@@ -32,7 +32,7 @@ export default {
             hideDetails: false,
             successMessages: '',
             success: false
-        }
+        };
     },
     computed: {
         ...mapState('users', ['me']),
