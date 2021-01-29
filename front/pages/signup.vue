@@ -78,8 +78,22 @@ export default {
     },
     methods: {
         onSubmitForm(){
-            this.$refs.form.validate();
-            console.log(this.valid);
+            if(this.$refs.form.validate()) {
+                this.$store.dispatch('users/signUp', {
+                    email: this.email,
+                    password: this.password,
+                    nickname: this.nickname,
+                    terms: this.terms
+                })
+                .then(() => {
+                    this.$router.push({
+                        path: '/',
+                    });
+                })
+                .catch(()=> {
+                    alert('Sign Up Failed!');
+                });
+            }
         }
     },
     head() {

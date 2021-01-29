@@ -1,9 +1,10 @@
 export const state = () => ({
-    hello: 'vuex',
+   hello: 'vuex', 
 });
 
 export const mutations = {
     bye(state) {
-        state.hello = 'good bye';
+        state.hello = 'Good Bye'
     }
-};
+}
+
