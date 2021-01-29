@@ -11,7 +11,7 @@
                             label="Nickname"
                             required
                         />
-                        <v-btn color="blue" type="submit">Edit</v-btn>
+                        <v-btn dark color="blue" type="submit">Edit</v-btn>
                     </v-form>
                 </v-container>
             </v-card>
@@ -19,12 +19,14 @@
                 <v-container>
                     <v-subheader>Following</v-subheader>
                     <follow-list :users="followingList" :remove="removeFollowing" />
+                    <v-btn @click="loadMoreFollowings" v-if="hasMoreFollowings" dark color="blue" style="width: 100%">More followings</v-btn>
                 </v-container>
             </v-card>
             <v-card style="margin-bottom: 20px">
                 <v-container>
                     <v-subheader>Follower</v-subheader>
                     <follow-list :users="followerList" :remove="removeFollower" />
+                    <v-btn @click="loadMoreFollowers" v-if="hasMoreFollowers" dark color="blue" style="width: 100%">More followers</v-btn>
                 </v-container>
             </v-card>
         </v-container>
@@ -53,8 +55,19 @@ export default {
         },
         followerList() {
             return this.$store.state.users.followerList;
+        },
+        hasMoreFollowings() {
+            return this.$store.state.users.hasMoreFollowings;
+        },
+        hasMoreFollowers() {
+            return this.$store.state.users.hasMoreFollowers;
         }
     },
+    fetch({ store }) {
+        store.dispatch('users/loadFollowings');
+        store.dispatch('users/loadFollowers');
+    },
+    middleware: 'authenticated',
     methods:{
         onChangeNickname() {
             this.$store.dispatch('users/changeNickname', {
@@ -67,13 +80,18 @@ export default {
         removeFollower(id) {
             this.$store.dispatch('users/removeFollower', { id });
         },
+        loadMoreFollowings() {
+            this.$store.dispatch('users/loadFollowings');
+        },
+        loadMoreFollowers() {
+            this.$store.dispatch('users/loadFollowers');
+        }
     },
     head() {
         return {
             title: 'Profile',
         };
-    },
-    middleware: 'authenticated',    
+    },    
 };
 </script>
 
