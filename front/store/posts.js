@@ -1,6 +1,10 @@
 export const state = () => ({
     mainPosts: [],
+    hasMorePosts: true,
 });
+
+const totalPosts = 51;
+const limit = 10;
 
 export const mutations = {
     addMainPost(state, payload) {
@@ -15,6 +19,21 @@ export const mutations = {
         const index = state.mainPosts.findIndex(v => v.id === payload.postId);
         state.mainPosts[index].Comments.unshift(payload);
 
+    },
+    loadPosts(state) {
+        const diff = totalPosts - state.mainPosts.length;
+        const fakePosts = Array(diff > limit ? limit : diff).fill().map(v => ({
+            id: Math.random().toString(),
+            User: {
+                id: 1,
+                nickname: 'FifthOh'
+            },
+            content: `Apply infinite scrolling - ${Math.random()}`,
+            Comments: [],
+            Images: []
+        }));
+        state.mainPosts = state.mainPosts.concat(fakePosts);
+        state.hasMorePosts = fakePosts.length === limit;
     }
 };
 
@@ -28,5 +47,10 @@ export const actions = {
     },
     addComment({ commit }, payload) {
         commit('addComment', payload);
+    },
+    loadPosts({ commit, state }, payload) {
+        if (state.hasMorePosts) {
+            commit('loadPosts');
+        }
     }
 };
