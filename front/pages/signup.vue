@@ -76,6 +76,20 @@ export default {
             ],
         };
     },
+    computed: {
+        me() {
+            return this.$store.state.users.me;
+        }
+    },
+    watch: {
+        me(newValue, oldValue) {
+            if(newValue) {
+                this.$router.push({
+                    path: '/',
+                });
+            }
+        },
+    },
     methods: {
         onSubmitForm(){
             if(this.$refs.form.validate()) {
@@ -100,7 +114,8 @@ export default {
         return {
             title: 'Sign Up',
         };
-    }    
+    },
+    middleware: 'anonymous',
 }
 </script>
 
