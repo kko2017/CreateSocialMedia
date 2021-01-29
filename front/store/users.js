@@ -62,6 +62,11 @@ export const actions = {
     // },
     // 가급적이면 스테이트를 여기서 바꾸는 것보다 뮤테이션을 이용해서 바꾸는게 낫다. 뮤테이션이 있다면...
     signUp({ commit, dispatch, state, rootState, getters, rootGetters }, payload) {
+        this.$axios.post('http://localhost:3085/user', {
+            email: payload.email,
+            nickname: payload.nickname,
+            password: payload.password,
+        })
         commit('setMe', payload);
     },
     singIn({ commit }, payload) {
