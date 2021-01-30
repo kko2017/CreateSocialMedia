@@ -9,6 +9,7 @@ const morgan = require('morgan');
 const db = require('./models');
 const passportConfig = require('./passport');
 const userRouter = require('./routes/user');
+const postRouter = require('./routes/post');
 const app = express();
 
 // Run sequelize and (passport config in the passport folder)
@@ -21,6 +22,9 @@ app.use(cors({
     origin: 'http://localhost:3000',
     credentials: true
 }));
+
+// Front can access the image in uploads folder.
+app.use('/', express.static('uploads'));
 // make req.body as to parse json from frontend, urlencode form data of frontend
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -45,6 +49,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/user', userRouter);
+app.use('/post', postRouter);
 
 app.listen(3085, () => {
     console.log(`backend server ${3085} port stand by...`);

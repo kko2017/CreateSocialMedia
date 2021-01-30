@@ -15,7 +15,16 @@
                     @input="onChangeTextarea"
                 />
                 <v-btn type="submit" color="green" absolute right>ChitChat</v-btn>
-                <v-btn>Image Upload</v-btn>
+                <input ref="imageInput" type="file" multiple hidden @change="onChnageImages">
+                <v-btn type="button" @click="onClickImageUpload">Image Upload</v-btn>
+                <div>
+                    <div v-for="(p, i) in imagePaths" :key="p" style="display: inline-block">
+                        <img :src="`http://localhost:3085/${p}`" :alt="p" style="width: 200px">
+                        <div>
+                            <button type="button" @click="onRemoveImage(i)">remove</button>
+                        </div>
+                    </div>
+                </div>
             </v-form>
         </v-container>
     </v-card>    
@@ -36,6 +45,7 @@ export default {
     },
     computed: {
         ...mapState('users', ['me']),
+        ...mapState('posts', ['imagePaths'])
     },
     methods: {
         onChangeTextarea(value) {
@@ -67,6 +77,20 @@ export default {
 
                 });
             }
+        },
+        onClickImageUpload() {
+            this.$refs.imageInput.click();
+        },
+        onChnageImages(e) {
+            console.log(e.target.files);
+            const imageFormData= new FormData();
+            [].forEach.call(e.target.files, (f) => {
+                imageFormData.append('image', f); // {image: [file1, file2 ...]}
+            });
+            this.$store.dispatch('posts/uploadImages', imageFormData);
+        },
+        onRemoveImage(index) {
+            this.$store.commit('posts/removeImagePaths', index);
         }
     }
 }
