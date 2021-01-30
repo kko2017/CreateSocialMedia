@@ -16,7 +16,10 @@ passportConfig();
 
 app.use(morgan('dev'));
 // prevent cors
-app.use(cors('http://localhost:3000'));
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true
+}));
 // make req.body as to parse json from frontend, urlencode form data of frontend
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -25,7 +28,11 @@ app.use(cookie('cookiesecret'));
 app.use(session({
     resave: false,
     saveUninitialized: false,
-    secret: 'cookiesecret'
+    secret: 'cookiesecret',
+    cookie: {
+        httpOnly: true,
+        secure: false,
+    }
 }));
 
 //implement req.logIn req.logOut 
@@ -50,20 +57,34 @@ app.post('/user', async (req, res, next) => {
                 message: 'Registered email.',
             });
         }
-        const newUser = await db.User.create({
+        await db.User.create({
             email: req.body.email,
             password: hash,
             nickname: req.body.nickname,
         });
-        // HTTP Status code
-        return res.status(201).json(newUser);
+        passport.authenticate('local', (err, user, info) => {
+            if (err) {
+                console.error(err);
+                return next(err);
+            }
+            if (info) {
+                return res.status(401).send(info.reason);
+            }
+            return req.logIn(user, async (err) => { // input user info into session (how? serializeUser)
+                if (err) {
+                    console.error(err);
+                    return next(err);
+                }
+                return res.json(user);
+            });
+        })(req, res, next);
     } catch (error) {
         console.error(error);
         return next(err);
     }
 });
 
-app.post('/user/login', (req, res) => {
+app.post('/user/signin', (req, res, next) => {
     passport.authenticate('local', (err, user, info) => {
         if (err) {
             console.error(err);
