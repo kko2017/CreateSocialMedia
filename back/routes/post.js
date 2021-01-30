@@ -59,4 +59,56 @@ router.post('/', isSignedIn, async (req, res, next) => {
     }
 });
 
+router.get('/:id/comments', async (req, res, next) => {
+    try {
+        const post = await db.Post.findOnd({ where: { id: req.params.id } });
+        if (!post) {
+            return res.status(404).send('That post doesn\'t exist');
+        }
+        const comments = await db.Comment.findAll({
+            where: { PostId: post.id },
+            include: [
+                {
+                    model: db.User,
+                    attributes: ['id', 'nickname'],
+                }
+            ],
+            order: [['createdAt', 'ASC']],
+        });
+        return res.json(comments);
+    } catch (err) {
+        console.error(err);
+        return next(err);
+    }
+});
+
+router.post('/:id/comment', isSignedIn, async (req, res, next) => { // :id is called req.params.id
+    try {
+        const post = await db.Post.findOne({ where: { id: req.params.id } });
+        if (!post) {
+            return res.status(404).send('That post doesn\'t exist');
+        }
+        const newComment = await db.Comment.create({
+            PostId: post.id, // 이걸로 인해 포스트에도 새로운 커멘트가 등록이 된다.
+            UserId: req.user.id,
+            content: req.body.content,
+        });
+        const comment = await db.Comment.findOne({
+            where: {
+                id: newComment.id,
+            },
+            include: [
+                {
+                    model: db.User,
+                    attributes: ['id', 'nickname']
+                }
+            ],
+        });
+        return res.json(comment);
+    } catch (err) {
+        console.error(err);
+        return next(err);
+    }
+});
+
 module.exports = router;
