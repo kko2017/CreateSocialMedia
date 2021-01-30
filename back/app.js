@@ -8,6 +8,7 @@ const morgan = require('morgan');
 
 const db = require('./models');
 const passportConfig = require('./passport');
+const userRouter = require('./routes/user');
 const app = express();
 
 // Run sequelize and (passport config in the passport folder)
@@ -43,65 +44,7 @@ app.get('/', (req, res) => {
     res.send('Hello, backend!!');
 });
 
-app.post('/user', async (req, res, next) => {
-    try {
-        const hash = await bcrypt.hash(req.body.password, 12);
-        const exUser = await db.User.findOne({
-            where: {
-                email: req.body.email,
-            }
-        });
-        if (exUser) {
-            return res.status(403).json({
-                errorCode: 1,
-                message: 'Registered email.',
-            });
-        }
-        await db.User.create({
-            email: req.body.email,
-            password: hash,
-            nickname: req.body.nickname,
-        });
-        passport.authenticate('local', (err, user, info) => {
-            if (err) {
-                console.error(err);
-                return next(err);
-            }
-            if (info) {
-                return res.status(401).send(info.reason);
-            }
-            return req.logIn(user, async (err) => { // input user info into session (how? serializeUser)
-                if (err) {
-                    console.error(err);
-                    return next(err);
-                }
-                return res.json(user);
-            });
-        })(req, res, next);
-    } catch (error) {
-        console.error(error);
-        return next(err);
-    }
-});
-
-app.post('/user/signin', (req, res, next) => {
-    passport.authenticate('local', (err, user, info) => {
-        if (err) {
-            console.error(err);
-            return next(err);
-        }
-        if (info) {
-            return res.status(401).send(info.reason);
-        }
-        return req.logIn(user, async (err) => { // input user info into session (how? serializeUser)
-            if (err) {
-                console.error(err);
-                return next(err);
-            }
-            return res.json(user);
-        });
-    })(req, res, next);
-});
+app.use('/user', userRouter);
 
 app.listen(3085, () => {
     console.log(`backend server ${3085} port stand by...`);
