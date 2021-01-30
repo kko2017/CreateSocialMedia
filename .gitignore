@@ -144,3 +144,5 @@ yarn-error.log
 !.vscode/extensions.json
 *.code-workspace
 back/config/config.json
+
+uploads/

@@ -11,6 +11,7 @@ export const mutations = {
     addMainPost(state, payload) {
         // state.mainPosts.push(payload);
         state.mainPosts.unshift(payload);
+        state.imagePaths = [];
     },
     removeMainPost(state, payload) {
         const index = state.mainPosts.findIndex(v => v.id === payload.id);
@@ -45,9 +46,20 @@ export const mutations = {
 };
 
 export const actions = {
-    add({ commit }, payload) {
-        // 서버에 게시글 등록 요청 보냄
-        commit('addMainPost', payload);
+    add({ commit, state }, payload) {
+        this.$axios.post('http://localhost:3085/post', {
+            content: payload.content,
+            imagePaths: state.imagePaths,
+        }, {
+            withCredentials: true,
+        })
+            .then((res) => {
+                console.log(res.data);
+                commit('addMainPost', res.data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     },
     remove({ commit }, payload) {
         commit('removeMainPost', payload);
