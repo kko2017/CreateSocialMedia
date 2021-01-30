@@ -12,7 +12,10 @@ module.exports = () => {
     // 위의 메서드로부터 받은 id를 가지고 user 정보를 다 받는다.
     passport.deserializeUser(async (id, done) => {
         try {
-            const user = await db.User.findOne({ where: { id } });
+            const user = await db.User.findOne({
+                where: { id },
+                attributes: ['id', 'nickname'],
+            });
             return done(null, user); // 로그인 후 모든 콜이 올 때마다 유저 정보를 req.user에 넣어준다. 그리고 req.authenticated() === true로 만들어 준다.
         } catch (err) {
             console.error(err);

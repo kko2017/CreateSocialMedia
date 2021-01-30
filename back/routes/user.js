@@ -6,6 +6,11 @@ const db = require('../models');
 
 const router = express.Router();
 
+router.get('/', isSignedIn, async (req, res) => {
+    const user = req.user;
+    return res.json(user);
+});
+
 router.post('/', isNotSignedIn, async (req, res, next) => {
     try {
         const hash = await bcrypt.hash(req.body.password, 12);
