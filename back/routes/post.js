@@ -4,7 +4,7 @@ const path = require('path');
 
 const { isSignedIn } = require('./middlewares');
 const db = require('../models');
-const { Post } = require('../models');
+const { route } = require('./user');
 
 const router = express.Router();
 
@@ -45,12 +45,23 @@ router.post('/', isSignedIn, async (req, res, next) => {
             })));
             await newPost.addHashtags(result.map(r => r[0]));
         }
+        if (req.body.image) {
+            if (Array.isArray(req.body.image)) {
+                await Promise.all(req.body.image.map(image => {
+                    return db.Image.create({ src: image, PostId: newPost.id });
+                }));
+            } else {
+                await db.Image.create({ src: req.body.image, PostId: newPost.id });
+            }
+        }
         const fullPost = await db.Post.findOne({
             where: { id: newPost.id },
             include: [{
                 model: db.User,
                 attributes: ['id', 'nickname'],
-            }]
+            }, {
+                    model: db.Image,
+            }],
         });
         return res.json(fullPost);
     } catch(err) {
@@ -59,14 +70,29 @@ router.post('/', isSignedIn, async (req, res, next) => {
     }
 });
 
+router.delete('/:id/', async (req, res, next) => {
+    try {
+        await db.Post.destroy({
+            where: {
+                id: req.params.id,
+            }
+        });
+        return res.send('Delete it.');
+    } catch (err) {
+        console.error(err);
+        return next(err);
+   }
+});
+
 router.get('/:id/comments', async (req, res, next) => {
     try {
-        const post = await db.Post.findOnd({ where: { id: req.params.id } });
+        console.log('hello!!!!!!');
+        const post = await db.Post.findOne({ where: { id: req.params.id } });
         if (!post) {
             return res.status(404).send('That post doesn\'t exist');
         }
         const comments = await db.Comment.findAll({
-            where: { PostId: post.id },
+            where: { PostId: req.params.id },
             include: [
                 {
                     model: db.User,
@@ -75,6 +101,7 @@ router.get('/:id/comments', async (req, res, next) => {
             ],
             order: [['createdAt', 'ASC']],
         });
+        console.log('Comments!!!!', comments);
         return res.json(comments);
     } catch (err) {
         console.error(err);
