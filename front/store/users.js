@@ -70,7 +70,7 @@ export const actions = {
             console.log(res.data);
             commit('setMe', res.data);
         } catch (err) {
-            console.log(err);
+            console.error(err);
         }
     },
     signUp({ commit, dispatch, state, rootState, getters, rootGetters }, payload) {

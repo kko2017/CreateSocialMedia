@@ -138,8 +138,91 @@ router.post('/:id/comment', isSignedIn, async (req, res, next) => { // :id is ca
     }
 });
 
-router.post('/:id/retweet', async (req, res, next) => {
+router.post('/:id/retweet', isSignedIn, async (req, res, next) => {
+    try {
+        const post = await db.Post.findOne({
+            where: {
+                id: req.params.id
+            },
+            include: [{
+                model: db.Post,
+                as: 'Retweet', // 리트윗한 게시글을 리트윗한거면 원본 게시글이 됨. 
+            }]
+        });
+        if (!post) {
+            return res.status(404).send('This post doesn\'t exist');
+        }
+        if (req.user.id === post.UserId || (post.Retweet && post.Retweet.UserId === req.user.id)) {
+            return res.status(403).send('You can\'t retweet your post.');
+        }
+        const retweetTargetId = post.RetweetId || post.id;
+        const exPost = db.Post.findOne({
+            where: {
+                UserId: req.user.id,
+                RetweetId: retweetTargetId,
+            }
+        });
+        if (exPost) {
+            return res.status(403).send('You already retweet it');
+        }
+        // 리트윗 포스트를 생성
+        const retweet = await db.Post.create({
+            UserId: req.user.id,
+            RetweetId: retweetTargetId,  // 원본글 아이디
+            content: 'retweet'
+        });
+        // 리트윗을 원본 포스트와 함께 프론트로 보낸다
+        const retweetWithOriginalPost = await db.Post.findOne({
+            where: {
+                id: retweet.id
+            },
+            include: [{
+                model: db.User,
+                attributes: ['id', 'nickname'],
+            }, {
+                model: db.Post,
+                as: 'Retweet',
+                include: [{
+                    model: db.User,
+                    attributes: ['id', 'nickname']
+                }, {
+                    model: db.Image,
+                }]
+            }]
+        });
+        return res.json(retweetWithOriginalPost);
+    } catch (err) {
+        console.error(err);
+        return next(err);
+    }
+});
 
+router.post('/:id/like', isSignedIn, async (req, res, next) => {
+    try {
+        const post = await db.Post.findOne({ where: { id: req.params.id } });
+        if (!post) {
+            return res.status(404).send('That post doesn\'t exist');
+        }
+        await post.addLiker(req.user.id);
+        return res.json({ userId: req.user.id });
+    } catch (err) {
+        console.error(err);
+        return next(err);
+    }
+});
+
+router.delete('/:id/like', isSignedIn, async (req, res, next) => {
+    try {
+        const post = await db.Post.findOne({ where: { id: req.params.id } });
+        if (!post) {
+            return res.status(404).send('That post doesn\'t exist');
+        }
+        await post.removeLiker(req.user.id);
+        return res.json({ userId: req.user.id });
+    } catch (err) {
+        console.error(err);
+        return next(err);
+    }
 });
 
 module.exports = router;

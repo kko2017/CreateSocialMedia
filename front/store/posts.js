@@ -50,7 +50,7 @@ export const actions = {
                 commit('addMainPost', res.data);
             })
             .catch((err) => {
-                console.log(err);
+                console.error(err);
             });
     },
     remove({ commit }, payload) {
@@ -61,7 +61,7 @@ export const actions = {
                 commit('removeMainPost', payload);
             })
             .catch((err) => {
-                console.log(err);
+                console.error(err);
             });
     },
     addComment({ commit }, payload) {
@@ -75,7 +75,7 @@ export const actions = {
                 commit('addComment', res.data);
             })
             .catch((err) => {
-                console.log(err);
+                console.error(err);
             });
     },
     loadComments({ commit }, payload) {
@@ -85,7 +85,7 @@ export const actions = {
                 commit('loadComments', res.data);
             })
             .catch((err) => {
-                console.log(err);
+                console.error(err);
             });
     },
     loadPosts({ commit, state }, payload) {
@@ -96,7 +96,7 @@ export const actions = {
                     commit('loadPosts', res.data);
                 })
                 .catch((err) => {
-                    console.log(err);
+                    console.error(err);
                 });
         }
     },
@@ -109,7 +109,7 @@ export const actions = {
                 commit('concatImagePaths', res.data);
             })
             .catch((err) => {
-                console.log(err);
+                console.error(err);
             });
     }
 };
