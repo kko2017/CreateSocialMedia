@@ -159,7 +159,7 @@ router.post('/:id/retweet', isSignedIn, async (req, res, next) => {
             return res.status(403).send('You can\'t retweet your post.');
         }
         const retweetTargetId = post.RetweetId || post.id;
-        const exPost = db.Post.findOne({
+        const exPost = await db.Post.findOne({
             where: {
                 UserId: req.user.id,
                 RetweetId: retweetTargetId,
