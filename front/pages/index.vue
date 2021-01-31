@@ -32,13 +32,16 @@ export default {
             return this.$store.state.posts.hasMorePosts;
         }
     },
-    // fetch({ store }) {
-    //     store.dispatch('posts/loadPosts');
-    // },
-    // fetch will be deprecated in the near future, so advise you to use middleware
-    middleware({ store }) {
-        store.dispatch('posts/loadPosts');
+    beforeCreate() {
+        console.log(this.$store.state.posts.mainPosts.length);
+        if(this.$store.state.posts.mainPosts.length === 0) {
+            return this.$store.dispatch('posts/loadPosts', { reset: true });
+        }
     },
+    // fetch({ store }) {
+    //     // dispatch is promise so you should input return prior to it. If not, Nuxt is highly likely not to wait the result of the dispatch.
+    //     return store.dispatch('posts/loadPosts', { reset: true });
+    // },
     mounted() {
         // for your information, window cannot be used in created, but mounted
         window.addEventListener('scroll', this.onScroll);
@@ -49,7 +52,7 @@ export default {
     methods: {
         onScroll() {
             if (this.hasMorePosts && (window.scrollY + document.documentElement.clientHeight > document.documentElement.scrollHeight - 300)) {
-                this.$store.dispatch('posts/loadPosts');
+                return this.$store.dispatch('posts/loadPosts');
             }
         }
     }

@@ -62,20 +62,19 @@ export const actions = {
     // },
     // 가급적이면 스테이트를 여기서 바꾸는 것보다 뮤테이션을 이용해서 바꾸는게 낫다. 뮤테이션이 있다면...
 
-    loadUser({ commit }) {
-        this.$axios.get('http://localhost:3085/user', {}, {
-            withCredentials: true,
-        })
-            .then((res) => {
-                console.log(res.data);
-                commit('setMe', res.data);
-            })
-            .catch((err) => {
-                console.log(err);
+    async loadUser({ commit }) {
+        try {
+            const res = await this.$axios.get('/user', {
+                withCredentials: true,
             });
+            console.log(res.data);
+            commit('setMe', res.data);
+        } catch (err) {
+            console.log(err);
+        }
     },
     signUp({ commit, dispatch, state, rootState, getters, rootGetters }, payload) {
-        this.$axios.post('http://localhost:3085/user', {
+        this.$axios.post('/user', {
             email: payload.email,
             nickname: payload.nickname,
             password: payload.password,
@@ -91,7 +90,7 @@ export const actions = {
             });
     },
     singIn({ commit }, payload) {
-        this.$axios.post('http://localhost:3085/user/signin', {
+        this.$axios.post('/user/signin', {
             email: payload.email,
             password: payload.password
         }, {
@@ -106,7 +105,7 @@ export const actions = {
             });
     },
     logOut({ commit }, payload) {
-        this.$axios.post('http://localhost:3085/user/logout', {}, {
+        this.$axios.post('/user/logout', {}, {
             withCredentials: true,
         })
             .then((res) => {

@@ -39,7 +39,7 @@ export const mutations = {
 
 export const actions = {
     add({ commit, state }, payload) {
-        this.$axios.post('http://localhost:3085/post', {
+        this.$axios.post('/post', {
             content: payload.content,
             image: state.imagePaths,
         }, {
@@ -54,7 +54,7 @@ export const actions = {
             });
     },
     remove({ commit }, payload) {
-        this.$axios.delete(`http://localhost:3085/post/${payload.postId}`, { //delete method doesn't have body. Only two params exist
+        this.$axios.delete(`/post/${payload.postId}`, { //delete method doesn't have body. Only two params exist
             withCredentials: true,
         })
             .then(() => {
@@ -65,7 +65,7 @@ export const actions = {
             });
     },
     addComment({ commit }, payload) {
-        this.$axios.post(`http://localhost:3085/post/${payload.postId}/comment`, {
+        this.$axios.post(`/post/${payload.postId}/comment`, {
             content: payload.content,
         }, {
             withCredentials: true,
@@ -79,7 +79,7 @@ export const actions = {
             });
     },
     loadComments({ commit }, payload) {
-        this.$axios.get(`http://localhost:3085/post/${payload.postId}/comments`)
+        this.$axios.get(`/post/${payload.postId}/comments`)
             .then((res) => {
                 console.log(res.data);
                 commit('loadComments', res.data);
@@ -90,7 +90,7 @@ export const actions = {
     },
     loadPosts({ commit, state }, payload) {
         if (state.hasMorePosts) {
-            this.$axios.get(`http://localhost:3085/posts?offset=${state.mainPosts.length}&limit=10`)
+            this.$axios.get(`/posts?offset=${state.mainPosts.length}&limit=10`)
                 .then((res) => {
                     console.log(res.data);
                     commit('loadPosts', res.data);
@@ -101,7 +101,7 @@ export const actions = {
         }
     },
     uploadImages({ commit }, payload) {
-        this.$axios.post('http://localhost:3085/post/images', payload, {
+        this.$axios.post('/post/images', payload, {
             withCredentials: true,
         })
             .then((res) => {

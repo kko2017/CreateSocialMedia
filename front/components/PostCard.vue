@@ -75,7 +75,7 @@ export default {
     },
     methods: {
         onRemovePost() {
-            this.$store.dispatch('posts/remove', {
+            return this.$store.dispatch('posts/remove', {
                 postId: this.post.id,
             });
         },
@@ -86,9 +86,13 @@ export default {
             if(!this.commentOpened) {
                 this.$store.dispatch('posts/loadComments', {
                     postId: this.post.id,
+                })
+                .then(()=>{
+                    this.commentOpened = !this.commentOpened;
                 });
+            } else {
+                this.commentOpened = !this.commentOpened;
             }
-            this.commentOpened = !this.commentOpened;
         }
     }
 }

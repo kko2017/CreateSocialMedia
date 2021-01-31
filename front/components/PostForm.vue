@@ -80,7 +80,7 @@ export default {
             [].forEach.call(e.target.files, (f) => {
                 imageFormData.append('image', f); // {image: [file1, file2 ...]}
             });
-            this.$store.dispatch('posts/uploadImages', imageFormData);
+            return this.$store.dispatch('posts/uploadImages', imageFormData);
         },
         onRemoveImage(index) {
             this.$store.commit('posts/removeImagePaths', index);

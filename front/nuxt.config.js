@@ -3,13 +3,20 @@ module.exports = {
         'title': 'ChitchatSM'
     },
     modules: [
-        '@nuxtjs/vuetify',
         '@nuxtjs/axios'
+    ],
+    buildModules: [
+        '@nuxtjs/vuetify'
     ],
     plugins: [
 
     ],
     vuetify: {
 
+    },
+    axios: {
+        browserBaseURL: 'http://localhost:3085',
+        baseURL: 'http://localhost:3085',
+        https: false
     }
 };

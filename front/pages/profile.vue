@@ -65,26 +65,26 @@ export default {
     },
     fetch({ store }) {
         store.dispatch('users/loadFollowings');
-        store.dispatch('users/loadFollowers');
+        return store.dispatch('users/loadFollowers');
     },
     middleware: 'authenticated',
     methods:{
         onChangeNickname() {
-            this.$store.dispatch('users/changeNickname', {
+            return this.$store.dispatch('users/changeNickname', {
                 nickname: this.nickname
             });
         },
         removeFollowing(id) {
-            this.$store.dispatch('users/removeFollowing', { id });
+            return this.$store.dispatch('users/removeFollowing', { id });
         },
         removeFollower(id) {
-            this.$store.dispatch('users/removeFollower', { id });
+            return this.$store.dispatch('users/removeFollower', { id });
         },
         loadMoreFollowings() {
-            this.$store.dispatch('users/loadFollowings');
+            return this.$store.dispatch('users/loadFollowings');
         },
         loadMoreFollowers() {
-            this.$store.dispatch('users/loadFollowers');
+            return this.$store.dispatch('users/loadFollowers');
         }
     },
     head() {

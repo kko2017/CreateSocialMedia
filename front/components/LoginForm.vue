@@ -55,14 +55,14 @@ export default {
     methods: {
         onSubmitForm() {
             if(this.$refs.form.validate()){
-                this.$store.dispatch('users/singIn', {
+                return this.$store.dispatch('users/singIn', {
                     email: this.email,
                     password: this.password
                 });
             }
         },
         onLogOut() {
-            this.$store.dispatch('users/logOut');
+            return this.$store.dispatch('users/logOut');
         }
     }
 }

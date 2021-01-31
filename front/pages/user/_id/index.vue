@@ -46,7 +46,7 @@ export default {
     methods: {
         onScroll() {
             if (this.hasMorePosts && (window.scrollY + document.documentElement.clientHeight > document.documentElement.scrollHeight - 300)) {
-                this.$store.dispatch('posts/loadPosts');
+                return this.$store.dispatch('posts/loadPosts');
             }
         }
     }
