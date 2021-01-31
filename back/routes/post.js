@@ -138,4 +138,8 @@ router.post('/:id/comment', isSignedIn, async (req, res, next) => { // :id is ca
     }
 });
 
+router.post('/:id/retweet', async (req, res, next) => {
+
+});
+
 module.exports = router;
