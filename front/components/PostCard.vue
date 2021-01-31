@@ -76,7 +76,6 @@ export default {
             return !!(this.post.Likers || []).find(v => v.id === (this.me && this.me.id));
         },
         heartIcon() {
-            console.log('liked', this.liked);
             return this.liked ? 'mdi-heart' : 'mdi-heart-outline';
         }
     },
