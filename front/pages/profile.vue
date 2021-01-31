@@ -6,7 +6,7 @@
                     <v-subheader>My Profile</v-subheader>
                     <v-form ref="form" v-model="valid" @submit.prevent="onChangeNickname">
                         <v-text-field
-                            v-model='nickname'
+                            v-model="nickname"
                             :rules="nicknameRules"
                             label="Nickname"
                             required
@@ -19,14 +19,26 @@
                 <v-container>
                     <v-subheader>Following</v-subheader>
                     <follow-list :users="followingList" :remove="removeFollowing" />
-                    <v-btn @click="loadMoreFollowings" v-if="hasMoreFollowings" dark color="blue" style="width: 100%">More followings</v-btn>
+                    <v-btn 
+                        v-if="hasMoreFollowings" 
+                        dark 
+                        color="blue" 
+                        style="width: 100%" 
+                        @click="loadMoreFollowings"
+                    >More followings</v-btn>
                 </v-container>
             </v-card>
             <v-card style="margin-bottom: 20px">
                 <v-container>
                     <v-subheader>Follower</v-subheader>
                     <follow-list :users="followerList" :remove="removeFollower" />
-                    <v-btn @click="loadMoreFollowers" v-if="hasMoreFollowers" dark color="blue" style="width: 100%">More followers</v-btn>
+                    <v-btn 
+                        v-if="hasMoreFollowers" 
+                        dark 
+                        color="blue" 
+                        style="width: 100%" 
+                        @click="loadMoreFollowers"
+                    >More followers</v-btn>
                 </v-container>
             </v-card>
         </v-container>

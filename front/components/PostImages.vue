@@ -32,8 +32,7 @@
             contain
             aspect-ratio="2"
             style="flex: 1"
-            @click="zoomImages"
-        />      
+            @click="zoomImages"/>      
         <div style="flex: 1; align-items: center; justify-content: center; display: flex" @click="zoomImages" >
             <div style="text-align: center">
                 <v-icon>mdi-dots-horizontal</v-icon>

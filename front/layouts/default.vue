@@ -8,7 +8,7 @@
                 <v-spacer></v-spacer>
                 <v-toolbar-items>
                     <v-form @submit.prevent="onSearchHashtag">
-                        <div :style="{ display: 'flex', height: '100%', alignItems: 'center'}" >
+                        <div :style="{ display: 'flex', height: '100%', alignItems: 'center'}">
                             <v-text-field 
                                 v-model="hashtag"
                                 label="Search" 
