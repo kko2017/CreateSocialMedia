@@ -34,9 +34,7 @@ export default {
     },
     beforeCreate() {
         // console.log(this.$store.state.posts.mainPosts.length);
-        if(this.$store.state.posts.mainPosts.length === 0) {
-            return this.$store.dispatch('posts/loadPosts', { reset: true });
-        }
+        return this.$store.dispatch('posts/loadPosts', { reset: true });
     },
     // fetch({ store }) {
     //     // dispatch is promise so you should input return prior to it. If not, Nuxt is highly likely not to wait the result of the dispatch.

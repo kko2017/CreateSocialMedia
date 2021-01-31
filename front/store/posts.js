@@ -1,3 +1,6 @@
+import Vue from 'vue';
+import throttle from 'lodash.throttle';
+
 export const state = () => ({
     mainPosts: [],
     hasMorePosts: true,
@@ -23,11 +26,16 @@ export const mutations = {
     },
     loadComments(state, payload) {
         const index = state.mainPosts.findIndex(v => v.id === payload.postId);
-        state.mainPosts[index].Comments = payload;
+        // state.mainPosts[index].Comments = payload;
+        Vue.set(state.mainPosts[index], 'Comments', payload.data);
     },
     loadPosts(state, payload) {
-        state.mainPosts = state.mainPosts.concat(payload);
-        state.hasMorePosts = payload.length === limit;
+        if (payload.reset) {
+            state.mainPosts = payload.data;        
+        } else {
+            state.mainPosts = state.mainPosts.concat(payload.data);
+        }
+        state.hasMorePosts = payload.data.length === limit;
     },
     concatImagePaths(state, payload) {
         state.imagePaths = state.imagePaths.concat(payload);
@@ -100,18 +108,29 @@ export const actions = {
                 console.error(err);
             });
     },
-    loadPosts({ commit, state }, payload) {
-        if (state.hasMorePosts) {
-            this.$axios.get(`/posts?offset=${state.mainPosts.length}&limit=10`)
-                .then((res) => {
-                    console.log(res.data);
-                    commit('loadPosts', res.data);
-                })
-                .catch((err) => {
-                    console.error(err);
+    loadPosts: throttle(async function({ commit, state }, payload) {
+        try {
+            if (payload && payload.reset) {
+                const res = await this.$axios.get(`/posts?limit=${limit}`);
+                commit('loadPosts', {
+                data: res.data,
+                reset: true,
                 });
+                return;
+            }
+            if (state.hasMorePosts) {
+                const lastPost = state.mainPosts[state.mainPosts.length - 1];
+                const res = await this.$axios.get(`/posts?lastId=${lastPost && lastPost.id}&limit=${limit}`)
+                console.log(res.data);
+                commit('loadPosts', {
+                    data: res.data
+                });
+                return;
+            }
+        } catch (err) {
+            console.error(err);
         }
-    },
+    }, 2000),
     uploadImages({ commit }, payload) {
         this.$axios.post('/post/images', payload, {
             withCredentials: true,
