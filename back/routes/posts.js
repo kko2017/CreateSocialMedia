@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.get('/', async (req, res, next) => { // GET /posts?offset=10&limit=10
     try {
-        where = {};
+        let where = {};
         if (parseInt(req.query.lastId, 10)) {
             where = {
                 id: {

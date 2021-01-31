@@ -35,7 +35,7 @@ export const mutations = {
         state.followerList.splice(index, 1);
     },
     loadFollowings(state, payload) {
-        if (payload.offset === 0) {
+        if (payload.reset) {
             state.followingList = payload.data;
         } else {
             state.followingList = state.followingList.concat(payload.data);
@@ -43,7 +43,7 @@ export const mutations = {
         state.hasMoreFollowings = payload.data.length === limit;
     },
     loadFollowers(state, payload) {
-        if (payload.offset === 0) {
+        if (payload.reset) {
             state.followerList = payload.data;        
         } else {
             state.followerList = state.followerList.concat(payload.data);
@@ -139,22 +139,28 @@ export const actions = {
         commit('addFollower', payload);
     },
     loadFollowings({ commit, state }, payload) {
-        if (!(payload && payload.offset === 0) && !state.hasMoreFollowings) {
+        if (!(payload && payload.reset) && !state.hasMoreFollowings) {
             return;
         }
-        let offset = state.followingList.length;
-        if (payload && payload.offset === 0) {
-            offset = 0;
+
+        let url = '';
+        let lastId = '';
+        let reset = false;
+        if (payload && payload.reset) {
+            url = `/user/${state.me.id}/followings?limit=${limit}`;
+            reset = payload.reset;
+        } else if (state.hasMoreFollowings) {
+            lastId = state.followingList[state.followingList.length - 1];
+            url = `/user/${state.me.id}/followings?limit=${limit}&lastId=${lastId && lastId.id}`;
         }
-        console.log('offset!!', offset);
-        return this.$axios.get(`/user/${state.me.id}/followings?limit=${limit}&offset=${offset}`, {
+        return this.$axios.get(url, {
             withCredentials: true,
         })
             .then((res) => {
                 console.log('res.data', res.data);
                 commit('loadFollowings', {
                     data: res.data,
-                    offset,
+                    reset,
                 });
             })
             .catch((err) => {
@@ -162,20 +168,27 @@ export const actions = {
             });
     },
     loadFollowers({ commit, state }, payload) {
-        if (!(payload && payload.offset === 0) && !state.hasMoreFollowers) {
+        if (!(payload && payload.reset) && !state.hasMoreFollowers) {
             return;
         }
-        let offset = state.followerList.length;
-        if (payload && payload.offset === 0) {
-            offset = 0;
+
+        let url = '';
+        let lastId = '';
+        let reset = false;
+        if (payload && payload.reset) {
+            url = `/user/${state.me.id}/followers?limit=${limit}`;
+            reset = payload.reset;
+        } else if (state.hasMoreFollowers) {
+            lastId = state.followerList[state.followerList.length - 1];
+            url = `/user/${state.me.id}/followers?limit=${limit}&lastId=${lastId && lastId.id}`;
         }
-        return this.$axios.get(`/user/${state.me.id}/followers?limit=${limit}&offset=${offset}`, {
+        return this.$axios.get(url, {
             withCredentials: true,
         })
             .then((res) => {
                 commit('loadFollowers', {
                     data: res.data,
-                    offset,
+                    reset,
                 });
             })
             .catch((err) => {

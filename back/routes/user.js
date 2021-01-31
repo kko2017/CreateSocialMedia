@@ -152,13 +152,22 @@ router.patch('/nickname', isSignedIn, async (req, res, next) => {
 
 router.get('/:id/followings', isSignedIn, async (req, res, next) => {
     try {
+        let where = {};
+        if (parseInt(req.query.lastId, 10)) {
+            where = {
+                id: {
+                    [db.Sequelize.Op.gt]: parseInt(req.query.lastId, 10),
+                }
+            };
+        }
         const user = await db.User.findOne({
             where: { id: req.user.id },
         });
+        
         const followings = await user.getFollowings({
+            where,
             attributes: ['id', 'nickname'],
-            limit: parseInt(req.query.limit || 3, 10),
-            offset: parseInt(req.query.offset || 0, 10)
+            limit: parseInt(req.query.limit || 3, 10)
         });
         return res.json(followings);
     } catch (err) {
@@ -169,13 +178,21 @@ router.get('/:id/followings', isSignedIn, async (req, res, next) => {
 
 router.get('/:id/followers', isSignedIn, async (req, res, next) => {
     try {
+        let where = {};
+        if (parseInt(req.query.lastId, 10)) {
+            where = {
+                id: {
+                    [db.Sequelize.Op.gt]: parseInt(req.query.lastId, 10),
+                }
+            };
+        }
         const user = await db.User.findOne({
             where: { id: req.user.id },
         });
         const followers = await user.getFollowers({
+            where,
             attributes: ['id', 'nickname'],
-            limit: parseInt(req.query.limit || 3, 10),
-            offset: parseInt(req.query.offset || 0, 10)
+            limit: parseInt(req.query.limit || 3, 10)
         });
         return res.json(followers);
     } catch (err) {
