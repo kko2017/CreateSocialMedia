@@ -86,11 +86,11 @@ export default {
                 nickname: this.nickname
             });
         },
-        removeFollowing(id) {
-            return this.$store.dispatch('users/removeFollowing', { id });
+        removeFollowing(userId) {
+            return this.$store.dispatch('users/unfollow', { userId });
         },
-        removeFollower(id) {
-            return this.$store.dispatch('users/removeFollower', { id });
+        removeFollower(userId) {
+            return this.$store.dispatch('users/removeFollower', { userId });
         },
         loadMoreFollowings() {
             return this.$store.dispatch('users/loadFollowings');

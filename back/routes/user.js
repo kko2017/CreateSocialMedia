@@ -184,4 +184,19 @@ router.get('/:id/followers', isSignedIn, async (req, res, next) => {
     }
 });
 
+router.delete('/:id/follower', isSignedIn, async (req, res, next) => {
+    try {
+        const me = await db.User.findOne({
+            where: {
+                id: req.user.id
+            }
+        });
+        await me.removeFollower(req.params.id);
+        return res.send(req.params.id);
+    } catch (err) {
+        console.error(err);
+        return next(err);
+    }
+})
+
 module.exports = router;
