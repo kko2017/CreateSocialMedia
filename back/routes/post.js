@@ -4,7 +4,6 @@ const path = require('path');
 
 const { isSignedIn } = require('./middlewares');
 const db = require('../models');
-const { route } = require('./user');
 
 const router = express.Router();
 
@@ -60,7 +59,11 @@ router.post('/', isSignedIn, async (req, res, next) => {
                 model: db.User,
                 attributes: ['id', 'nickname'],
             }, {
-                    model: db.Image,
+                model: db.Image,
+            }, {
+                model: db.User,
+                as: 'Likers',
+                attributes: ['id']
             }],
         });
         return res.json(fullPost);
@@ -179,6 +182,10 @@ router.post('/:id/retweet', isSignedIn, async (req, res, next) => {
             include: [{
                 model: db.User,
                 attributes: ['id', 'nickname'],
+            }, {
+                model: db.User,
+                as: 'Likers',
+                attributes: ['id']
             }, {
                 model: db.Post,
                 as: 'Retweet',

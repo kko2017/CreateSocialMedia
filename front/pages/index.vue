@@ -33,7 +33,7 @@ export default {
         }
     },
     beforeCreate() {
-        console.log(this.$store.state.posts.mainPosts.length);
+        // console.log(this.$store.state.posts.mainPosts.length);
         if(this.$store.state.posts.mainPosts.length === 0) {
             return this.$store.dispatch('posts/loadPosts', { reset: true });
         }

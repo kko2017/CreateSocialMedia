@@ -34,6 +34,18 @@ export const mutations = {
     },
     removeImagePaths(state, payload) {
         state.imagePaths.splice(payload, 1);
+    },
+    unlikePost(state, payload) {
+        const index = state.mainPosts.findIndex(v => v.id === payload.postId);
+        const likerIndex = state.mainPosts[index].Likers.findIndex(v => v.id === payload.userId);
+        state.mainPosts[index].Likers.splice(likerIndex, 1);
+    },
+    likePost(state, payload) {
+        console.log('state mainPost', state.ma)
+        const index = state.mainPosts.findIndex(v => v.id === payload.postId);
+        state.mainPosts[index].Likers.push({
+            id: payload.userId,
+        });
     }
 };
 
@@ -107,6 +119,48 @@ export const actions = {
             .then((res) => {
                 console.log(res.data);
                 commit('concatImagePaths', res.data);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    },
+    retweet({ commit }, payload) {
+        this.$axios.post(`/post/${payload.postId}/retweet`, {}, {
+            withCredentials: true,
+        })
+            .then((res) => {
+                console.log(res.data);
+                commit('addMainPost', res.data);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    },
+    likePost({ commit }, payload) {
+        this.$axios.post(`/post/${payload.postId}/like`, {}, {
+            withCredentials: true,
+        })
+            .then((res) => {
+                console.log(res.data);
+                commit('likePost', {
+                    userId: res.data.userId,
+                    postId: payload.postId
+                });
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    },
+    unlikePost({ commit }, payload) {
+        this.$axios.delete(`/post/${payload.postId}/like`, {
+            withCredentials: true,
+        })
+            .then((res) => {
+                console.log(res.data);
+                commit('unlikePost', {
+                    userId: res.data.userId,
+                    postId: payload.postId
+                });
             })
             .catch((err) => {
                 console.error(err);
