@@ -13,8 +13,11 @@ module.exports = {
         locales: ['ko']
     },
     build: {
-        analyze: true,
-        extend(config, { isClient, isServer }) {
+        analyze: false,
+        extend(config, { isClient, isServer, isDev }) {
+            if (isServer && !isDev) {
+                config.devtool = 'hidden-source-map';
+            }
             console.log('webpack', config, isServer, isClient);
         }
     },
