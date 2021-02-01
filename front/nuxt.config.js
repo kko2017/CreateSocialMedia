@@ -6,8 +6,18 @@ module.exports = {
         '@nuxtjs/axios'
     ],
     buildModules: [
-        '@nuxtjs/vuetify'
+        '@nuxtjs/vuetify',
+        '@nuxtjs/moment'
     ],
+    moment: {
+        locales: ['ko']
+    },
+    build: {
+        analyze: true,
+        extend(config, { isClient, isServer }) {
+            console.log('webpack', config, isServer, isClient);
+        }
+    },
     plugins: [
 
     ],
