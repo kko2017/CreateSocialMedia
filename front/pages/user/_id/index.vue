@@ -38,13 +38,15 @@ export default {
         },
     },
     fetch({store, params}) {
-        store.dispatch('users/loadOther', { 
-            userId: params.id,
-        });
-        return store.dispatch('posts/loadUserPosts', {
-            userId: params.id,
-            reset: true,
-        });
+        return Promise.all([
+            store.dispatch('users/loadOther', { 
+                userId: params.id,
+            }),
+            store.dispatch('posts/loadUserPosts', {
+                userId: params.id,
+                reset: true,
+            }),
+        ]);
     },
     mounted() {
         // for your information, window cannot be used in created, but mounted

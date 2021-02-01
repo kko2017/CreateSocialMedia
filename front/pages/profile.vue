@@ -76,8 +76,10 @@ export default {
         }
     },
     fetch({ store }) {
-        store.dispatch('users/loadFollowings', { reset: true });
-        return store.dispatch('users/loadFollowers', { reset: true });
+        return Promise.all([
+            store.dispatch('users/loadFollowings', { reset: true }),
+            store.dispatch('users/loadFollowers', { reset: true }),
+        ]); 
     },
     middleware: 'authenticated',
     methods:{
