@@ -32,14 +32,10 @@ export default {
             return this.$store.state.posts.hasMorePosts;
         }
     },
-    beforeCreate() {
-        // console.log(this.$store.state.posts.mainPosts.length);
-        return this.$store.dispatch('posts/loadPosts', { reset: true });
+    fetch({ store }) {
+        // dispatch is promise so you should input return prior to it. If not, Nuxt is highly likely not to wait the result of the dispatch.
+        return store.dispatch('posts/loadPosts', { reset: true });
     },
-    // fetch({ store }) {
-    //     // dispatch is promise so you should input return prior to it. If not, Nuxt is highly likely not to wait the result of the dispatch.
-    //     return store.dispatch('posts/loadPosts', { reset: true });
-    // },
     mounted() {
         // for your information, window cannot be used in created, but mounted
         window.addEventListener('scroll', this.onScroll);

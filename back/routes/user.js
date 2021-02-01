@@ -11,6 +11,32 @@ router.get('/', isSignedIn, async (req, res) => {
     return res.json(user);
 });
 
+router.get('/:id', async (req, res, next) => {
+    try {
+        const user = await db.User.findOne({
+            where: { id: parseInt(req.params.id, 10) },
+            include: [{
+                model: db.Post,
+                as: 'Posts',
+                attributes: ['id'],
+            }, {
+                model: db.User,
+                as: 'Followings',
+                attributes: ['id'],
+            }, {
+                model: db.User,
+                as: 'Followers',
+                attributes: ['id'],
+            }],
+            attributes: ['id', 'nickname']
+        });
+        return res.json(user);
+    } catch (err) {
+        console.error(err);
+        return next(err);
+    }
+});
+
 router.post('/', isNotSignedIn, async (req, res, next) => {
     try {
         const hash = await bcrypt.hash(req.body.password, 12);
@@ -107,6 +133,37 @@ router.post('/logout', isSignedIn, (req, res) => {
     req.logout();
     req.session.destroy(); // Optional choice
     return res.status(200).send('You logged out.');
+});
+
+router.get('/:id/posts', async (req, res, next) => {
+    try {
+        let where = {
+            UserId: parseInt(req.params.id, 10),
+            RetweetId: null,
+        };
+        if (parseInt(req.query.lastId, 10)) {
+            where[db.Sequelize.Op.lt] = parseInt(req.query.lastId, 10);
+        }
+        const posts = await db.Post.findAll({
+            where,
+            include: [{
+                model: db.User,
+                attributes: ['id', 'nickname']
+            }, {
+                model: db.Image,
+            }, {
+                model: db.User,
+                as: 'Likers',
+                attributes: ['id']
+            },],
+            order: [['createdAt', 'DESC']],
+            limit: parseInt(req.query.limit, 10) || 10
+        });
+        return res.json(posts);
+    } catch (err) {
+        console.error(err);
+        return next(err);
+    }
 });
 
 router.post('/:id/follow', isSignedIn, async (req, res, next) => {

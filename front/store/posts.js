@@ -131,6 +131,29 @@ export const actions = {
             console.error(err);
         }
     }, 2000),
+    loadUserPosts: throttle(async function({ commit, state }, payload) {
+        try {
+            if (payload && payload.reset) {
+                const res = await this.$axios.get(`/user/${payload.userId}/posts?limit=${limit}`);
+                commit('loadPosts', {
+                data: res.data,
+                reset: true,
+                });
+                return;
+            }
+            if (state.hasMorePosts) {
+                const lastPost = state.mainPosts[state.mainPosts.length - 1];
+                const res = await this.$axios.get(`/user/${payload.userId}/posts?lastId=${lastPost && lastPost.id}&limit=${limit}`)
+                console.log(res.data);
+                commit('loadPosts', {
+                    data: res.data
+                });
+                return;
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }, 2000),
     uploadImages({ commit }, payload) {
         this.$axios.post('/post/images', payload, {
             withCredentials: true,

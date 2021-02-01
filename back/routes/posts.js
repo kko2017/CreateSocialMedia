@@ -43,7 +43,8 @@ router.get('/', async (req, res, next) => { // GET /posts?offset=10&limit=10
         });
         return res.json(posts);
     } catch (err) {
-        
+        console.error(err);
+        return next(err);
    }
 });
 
