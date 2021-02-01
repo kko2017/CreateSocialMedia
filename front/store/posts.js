@@ -29,6 +29,9 @@ export const mutations = {
         // state.mainPosts[index].Comments = payload;
         Vue.set(state.mainPosts[index], 'Comments', payload.data);
     },
+    loadPost(state, payload) {
+        state.mainPosts = [payload];
+    },
     loadPosts(state, payload) {
         if (payload.reset) {
             state.mainPosts = payload.data;        
@@ -107,6 +110,14 @@ export const actions = {
             .catch((err) => {
                 console.error(err);
             });
+    },
+    async loadPost({ commit, state }, payload) {
+        try {
+            const res = await this.$axios.get(`/post/${payload}`);
+            commit('loadPost', res.data);          
+        } catch (err) {
+            console.error(err);
+        }
     },
     loadPosts: throttle(async function({ commit, state }, payload) {
         try {
